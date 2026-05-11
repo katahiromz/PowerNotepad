@@ -295,7 +295,7 @@ bool RegexEngine::ReplaceMatch(const wchar_t *text, size_t textLen,
         /*match_context=*/ nullptr,
         reinterpret_cast<PCRE2_SPTR16>(replacement),
         PCRE2_ZERO_TERMINATED,
-        reinterpret_cast<PCRE2_UCHAR16 *>(result.data()),
+        reinterpret_cast<PCRE2_UCHAR16 *>(&result[0]),
         &outputLen);
 
     if (rc == PCRE2_ERROR_NOMEMORY)
@@ -314,7 +314,7 @@ bool RegexEngine::ReplaceMatch(const wchar_t *text, size_t textLen,
             nullptr, nullptr,
             reinterpret_cast<PCRE2_SPTR16>(replacement),
             PCRE2_ZERO_TERMINATED,
-            reinterpret_cast<PCRE2_UCHAR16 *>(result.data()),
+            reinterpret_cast<PCRE2_UCHAR16 *>(&result[0]),
             &outputLen);
     }
 
