@@ -428,7 +428,7 @@ NOTEPAD_WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
 
     default:
-        if (msg == aFINDMSGSTRING)
+        if (msg == DIALOG_GetFindReplaceMsg())
         {
             PFINDREPLACEDX pFindReplace = (PFINDREPLACEDX)lParam;
             Globals.find = *(PFINDREPLACEDX)lParam;

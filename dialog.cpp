@@ -833,7 +833,7 @@ static VOID DIALOG_ReadFindReplace(HWND hDlg, PFINDREPLACEDX pFR, BOOL bReplace)
 /* Registered message ID for find/replace notifications (cached on first use) */
 static UINT s_uFindReplaceMsg = 0;
 
-static UINT DIALOG_GetFindReplaceMsg(VOID)
+UINT DIALOG_GetFindReplaceMsg(VOID)
 {
     if (s_uFindReplaceMsg == 0)
         s_uFindReplaceMsg = RegisterWindowMessage(FINDMSGSTRING);

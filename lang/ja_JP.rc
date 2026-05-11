@@ -136,7 +136,7 @@ FONT 9, "MS UI Gothic"
 {
     LTEXT "検索文字列(&N):", -1, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 5, 125, 15, ES_AUTOHSCROLL
-    DEFPUSHBUTTON "次を検索(&F)", psh1, 200, 5, 60, 15
+    DEFPUSHBUTTON "次を検索(&F)", IDOK, 200, 5, 60, 15
     PUSHBUTTON "キャンセル", IDCANCEL, 200, 25, 60, 15
     AUTOCHECKBOX "大文字小文字を区別する(&C)", chx1, 5, 30, 105, 15
     AUTOCHECKBOX "単語単位で探す(&W)", chx2, 5, 50, 105, 15

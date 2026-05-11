@@ -136,7 +136,7 @@ FONT 9, "MS Shell Dlg"
 {
     LTEXT "Fi&nd what:", -1, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 65, 5, 125, 15, ES_AUTOHSCROLL
-    DEFPUSHBUTTON "&Find Next", psh1, 200, 5, 60, 15
+    DEFPUSHBUTTON "&Find Next", IDOK, 200, 5, 60, 15
     PUSHBUTTON "Cancel", IDCANCEL, 200, 25, 60, 15
     AUTOCHECKBOX "Match &case", chx1, 5, 30, 105, 15
     AUTOCHECKBOX "Match &whole word only", chx2, 5, 50, 105, 15
