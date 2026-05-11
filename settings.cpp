@@ -197,16 +197,6 @@ void NOTEPAD_LoadSettingsFromRegistry(PWINDOWPLACEMENT pWP)
     if (hKey)
         RegCloseKey(hKey);
 
-    /* WORKAROUND: Far East Asian users may not have suitable fixed-pitch fonts. */
-    switch (PRIMARYLANGID(GetUserDefaultLangID()))
-    {
-        case LANG_CHINESE:
-        case LANG_JAPANESE:
-        case LANG_KOREAN:
-            Globals.lfFont.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
-            break;
-    }
-
     hFont = CreateFontIndirect(&Globals.lfFont);
     SendMessage(Globals.hEdit, WM_SETFONT, (WPARAM)hFont, TRUE);
     if (hFont)
