@@ -133,12 +133,14 @@ NOTEPAD_IsWordBoundaryMatch(LPCTSTR pszText, INT iTextLength, DWORD dwStart, DWO
 {
     if (dwStart > 0)
     {
-        if (_istalnum(pszText[dwStart - 1]) || pszText[dwStart - 1] == _T('_'))
+        TCHAR ch = pszText[dwStart - 1];
+        if (_istalnum(ch) || ch == _T('_'))
             return FALSE;
     }
     if ((INT)dwEnd < iTextLength)
     {
-        if (_istalnum(pszText[dwEnd]) || pszText[dwEnd] == _T('_'))
+        TCHAR ch = pszText[dwEnd];
+        if (_istalnum(ch) || ch == _T('_'))
             return FALSE;
     }
     return TRUE;
@@ -338,16 +340,23 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
                 std::match_results<LPCTSTR> fullMatch;
                 LPCTSTR pszSelStart = pszText + dwBegin;
                 LPCTSTR pszSelEnd = pszText + dwEnd;
-                bSelectionMatched = std::regex_match(pszSelStart, pszSelEnd, fullMatch, regexFind);
-                if (bSelectionMatched && (pFindReplace->Flags & FR_WHOLEWORD))
-                    bSelectionMatched = NOTEPAD_IsWordBoundaryMatch(pszText, iTextLength, dwBegin, dwEnd);
-                if (bSelectionMatched)
+                try
                 {
-                    std::basic_string<TCHAR> replaced;
-                    std::regex_replace(std::back_inserter(replaced),
-                                       pszSelStart, pszSelEnd,
-                                       regexFind, pFindReplace->lpstrReplaceWith);
-                    SendMessage(Globals.hEdit, EM_REPLACESEL, TRUE, (LPARAM)replaced.c_str());
+                    bSelectionMatched = std::regex_match(pszSelStart, pszSelEnd, fullMatch, regexFind);
+                    if (bSelectionMatched && (pFindReplace->Flags & FR_WHOLEWORD))
+                        bSelectionMatched = NOTEPAD_IsWordBoundaryMatch(pszText, iTextLength, dwBegin, dwEnd);
+                    if (bSelectionMatched)
+                    {
+                        std::basic_string<TCHAR> replaced;
+                        std::regex_replace(std::back_inserter(replaced),
+                                           pszSelStart, pszSelEnd,
+                                           regexFind, pFindReplace->lpstrReplaceWith);
+                        SendMessage(Globals.hEdit, EM_REPLACESEL, TRUE, (LPARAM)replaced.c_str());
+                    }
+                }
+                catch (const std::regex_error&)
+                {
+                    bSelectionMatched = FALSE;
                 }
             }
         }
