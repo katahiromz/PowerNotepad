@@ -231,7 +231,6 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
     int iTextLength, iTargetLength;
     DWORD dwMatchEnd;
     LPCTSTR pszText = NULL;
-    LPTSTR pszAllocatedText = NULL;
     HLOCAL hText = NULL;
     BOOL bTextLocked = FALSE;
     DWORD dwPosition, dwBegin, dwEnd;
@@ -272,11 +271,6 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
             LocalUnlock(hText);
             bTextLocked = FALSE;
         }
-        if (pszAllocatedText)
-        {
-            HeapFree(GetProcessHeap(), 0, pszAllocatedText);
-            pszAllocatedText = NULL;
-        }
 
         pszText = NULL;
         hText = NULL;
@@ -293,13 +287,7 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
         }
 
         if (!pszText)
-        {
-            pszAllocatedText = (LPTSTR)HeapAlloc(GetProcessHeap(), 0, (iTextLength + 1) * sizeof(TCHAR));
-            if (!pszAllocatedText)
-                return FALSE;
-            GetWindowText(Globals.hEdit, pszAllocatedText, iTextLength + 1);
-            pszText = pszAllocatedText;
-        }
+            return FALSE;
 
         return TRUE;
     };
@@ -416,8 +404,6 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
 
     if (bTextLocked)
         LocalUnlock(hText);
-    if (pszAllocatedText)
-        HeapFree(GetProcessHeap(), 0, pszAllocatedText);
     return bSuccess;
 }
 

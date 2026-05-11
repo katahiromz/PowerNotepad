@@ -37,3 +37,4 @@ lib*.a
 *.dll
 *.db
 *.opendb
+_deps/
