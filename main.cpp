@@ -14,6 +14,7 @@
 #include <shlobj.h>
 #include <strsafe.h>
 #include <regex>
+#include <iterator>
 
 NOTEPAD_GLOBALS Globals;
 static ATOM aFINDMSGSTRING;
@@ -152,7 +153,7 @@ NOTEPAD_FindRegexDown(PFINDREPLACEDX pFindReplace, const std::basic_regex<TCHAR>
     LPCTSTR pszEnd = pszText + iTextLength;
     LPCTSTR pszSearch = pszBegin + dwStartPos;
 
-    while (pszSearch <= pszEnd)
+    while (pszSearch < pszEnd)
     {
         if (!std::regex_search(pszSearch, pszEnd, match, regexFind))
             break;
@@ -198,7 +199,7 @@ NOTEPAD_FindRegexUp(PFINDREPLACEDX pFindReplace, const std::basic_regex<TCHAR>& 
     BOOL bFound = FALSE;
     DWORD dwPosition = 0, dwEndPos = 0;
 
-    while (pszSearch <= pszEnd)
+    while (pszSearch < pszEnd)
     {
         if (!std::regex_search(pszSearch, pszEnd, match, regexFind))
             break;
@@ -208,9 +209,18 @@ NOTEPAD_FindRegexUp(PFINDREPLACEDX pFindReplace, const std::basic_regex<TCHAR>& 
         if (dwPos >= dwStartPos)
             break;
 
-        if (match.length(0) > 0 &&
-            (!(pFindReplace->Flags & FR_WHOLEWORD) ||
-             NOTEPAD_IsWordBoundaryMatch(pszText, iTextLength, dwPos, dwPosEnd)))
+        if (match.length(0) == 0)
+        {
+            if (dwPos < (DWORD)iTextLength)
+            {
+                pszSearch = pszBegin + dwPos + 1;
+                continue;
+            }
+            break;
+        }
+
+        if (!(pFindReplace->Flags & FR_WHOLEWORD) ||
+            NOTEPAD_IsWordBoundaryMatch(pszText, iTextLength, dwPos, dwPosEnd))
         {
             bFound = TRUE;
             dwPosition = dwPos;
@@ -274,7 +284,7 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
         }
     }
 
-    auto AcquireEditText = [&]() -> BOOL
+    auto acquireEditText = [&]() -> BOOL
     {
         if (bTextLocked)
         {
@@ -313,7 +323,7 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
         return TRUE;
     };
 
-    if (!AcquireEditText())
+    if (!acquireEditText())
         return FALSE;
 
     SendMessage(Globals.hEdit, EM_GETSEL, (WPARAM) &dwBegin, (LPARAM) &dwEnd);
@@ -333,9 +343,10 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
                     bSelectionMatched = NOTEPAD_IsWordBoundaryMatch(pszText, iTextLength, dwBegin, dwEnd);
                 if (bSelectionMatched)
                 {
-                    std::basic_string<TCHAR> selected(pszSelStart, pszSelEnd);
-                    std::basic_string<TCHAR> replaced = std::regex_replace(
-                        selected, regexFind, pFindReplace->lpstrReplaceWith);
+                    std::basic_string<TCHAR> replaced;
+                    std::regex_replace(std::back_inserter(replaced),
+                                       pszSelStart, pszSelEnd,
+                                       regexFind, pFindReplace->lpstrReplaceWith);
                     SendMessage(Globals.hEdit, EM_REPLACESEL, TRUE, (LPARAM)replaced.c_str());
                 }
             }
@@ -349,7 +360,7 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
 
         if (bSelectionMatched)
         {
-            if (!AcquireEditText())
+            if (!acquireEditText())
                 return FALSE;
             SendMessage(Globals.hEdit, EM_GETSEL, (WPARAM)&dwBegin, (LPARAM)&dwEnd);
         }
