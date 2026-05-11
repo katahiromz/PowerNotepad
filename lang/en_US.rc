@@ -129,6 +129,44 @@ FONT 8, "MS Shell Dlg"
     PUSHBUTTON "Cancel", IDCANCEL, 50, 75, 60, 20
 }
 
+IDD_FIND DIALOG 0, 0, 265, 97
+CAPTION "Find"
+STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg"
+{
+    LTEXT "Fi&nd what:", -1, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    EDITTEXT edt1, 65, 5, 125, 15, ES_AUTOHSCROLL
+    DEFPUSHBUTTON "&Find Next", IDOK, 200, 5, 60, 15
+    PUSHBUTTON "Cancel", IDCANCEL, 200, 25, 60, 15
+    AUTOCHECKBOX "Match &case", chx1, 5, 30, 105, 15
+    AUTOCHECKBOX "Match &whole word only", chx2, 5, 50, 105, 15
+    AUTOCHECKBOX "Use &regular expression", chx3, 5, 70, 105, 15
+    GROUPBOX "Direction", -1, 135, 25, 60, 65
+    AUTORADIOBUTTON "&Up", rad1, 145, 45, 35, 15, WS_TABSTOP
+    AUTORADIOBUTTON "&Down", rad2, 145, 65, 35, 15, WS_TABSTOP
+}
+
+IDD_REPLACE DIALOG 0, 0, 270, 115
+CAPTION "Replace"
+STYLE DS_CENTER | DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg"
+{
+    LTEXT "Fi&nd what:", -1, 5, 5, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    EDITTEXT edt1, 65, 5, 130, 15, ES_AUTOHSCROLL
+    LTEXT "Re&place with:", -1, 5, 25, 55, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    EDITTEXT edt2, 65, 25, 130, 15, ES_AUTOHSCROLL
+    DEFPUSHBUTTON "&Find Next", IDOK, 205, 5, 60, 15
+    PUSHBUTTON "&Replace", IDCANCEL, 205, 25, 60, 15
+    PUSHBUTTON "Replace &All", IDCANCEL, 205, 45, 60, 15
+    PUSHBUTTON "Cancel", IDCANCEL, 205, 65, 60, 15
+    AUTOCHECKBOX "Match &case", chx1, 5, 50, 105, 15
+    AUTOCHECKBOX "Match &whole word only", chx2, 5, 70, 105, 15
+    AUTOCHECKBOX "Use &regular expression", chx3, 5, 90, 105, 15
+    GROUPBOX "Direction", -1, 120, 50, 75, 60
+    AUTORADIOBUTTON "&Up", rad1, 130, 65, 45, 15, WS_TABSTOP
+    AUTORADIOBUTTON "&Down", rad1, 130, 85, 45, 15, WS_TABSTOP
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // RT_ACCELERATOR
 

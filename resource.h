@@ -38,6 +38,8 @@
 #define IDD_ENCODING                        516
 #define IDD_GOTO                            519
 #define IDD_PRINTING                        523
+#define IDD_FIND                            524
+#define IDD_REPLACE                         525
 
 #define IDI_NPICON                          521
 
