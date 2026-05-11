@@ -1,5 +1,5 @@
 /*
- * PROJECT:    ReactOS Notepad
+ * PROJECT:    Power Notepad
  * LICENSE:    LGPL-2.1-or-later (https://spdx.org/licenses/LGPL-2.1-or-later)
  * PURPOSE:    Providing a Windows-compatible simple text editor for ReactOS
  * COPYRIGHT:  Copyright 1998,99 Marcel Baur <mbaur@g26.ethz.ch>
@@ -13,7 +13,7 @@
 
 static BOOL IsTextNonZeroASCII(LPCVOID pText, DWORD dwSize)
 {
-    const signed char *pch = pText;
+    const signed char *pch = (const signed char *)pText;
     while (dwSize-- > 0)
     {
         if (*pch <= 0)
@@ -135,7 +135,7 @@ ProcessNewLinesAndNulls(HLOCAL *phLocal, LPWSTR *ppszText, SIZE_T *pcchText, EOL
             return FALSE; /* Failure */
         }
 
-        pszNew = LocalLock(hLocal);
+        pszNew = (LPWSTR)LocalLock(hLocal);
         if (!pszNew)
         {
             LocalFree(hLocal);
@@ -183,7 +183,7 @@ ReadText(HANDLE hFile, ENCODING *pencFile, EOLN *piEoln)
             goto done;
         }
 
-        pszNewText = LocalLock(hNewLocal);
+        pszNewText = (LPWSTR)LocalLock(hNewLocal);
         if (!pszNewText)
         {
             SetLastError(ERROR_NOT_ENOUGH_MEMORY);
@@ -202,7 +202,7 @@ ReadText(HANDLE hFile, ENCODING *pencFile, EOLN *piEoln)
     if (hMapping == NULL)
         goto done;
 
-    pBytes = MapViewOfFile(hMapping, FILE_MAP_READ, 0, 0, dwSize);
+    pBytes = (PBYTE)MapViewOfFile(hMapping, FILE_MAP_READ, 0, 0, dwSize);
     if (!pBytes)
         goto done;
 
@@ -249,7 +249,7 @@ ReadText(HANDLE hFile, ENCODING *pencFile, EOLN *piEoln)
                 goto done;
             }
 
-            pszNewText = LocalLock(hNewLocal);
+            pszNewText = (LPWSTR)LocalLock(hNewLocal);
             if (!pszNewText)
             {
                 SetLastError(ERROR_NOT_ENOUGH_MEMORY);
@@ -292,7 +292,7 @@ ReadText(HANDLE hFile, ENCODING *pencFile, EOLN *piEoln)
                 goto done;
             }
 
-            pszNewText = LocalLock(hNewLocal);
+            pszNewText = (LPWSTR)LocalLock(hNewLocal);
             if (!pszNewText)
             {
                 SetLastError(ERROR_NOT_ENOUGH_MEMORY);

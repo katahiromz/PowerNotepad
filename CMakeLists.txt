@@ -1,10 +1,10 @@
-# RNotepad --- Independent ReactOS Notepad
+# PowerNotepad --- Power Notepad
 
 # CMake minimum version
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 
 # project name and languages
-project(RNotepad C RC)
+project(RNotepad CXX RC)
 
 ##############################################################################
 # Debugging
@@ -25,73 +25,30 @@ if (MSVC)
 endif()
 
 ##############################################################################
-# notepad.exe
+# pnotepad.exe
 
-add_executable(notepad WIN32
-    dialog.c
-    main.c
-    printing.c
-    settings.c
-    text.c
+add_executable(pnotepad WIN32
+    dialog.cpp
+    main.cpp
+    printing.cpp
+    settings.cpp
+    text.cpp
     rsrc.rc)
 
-target_compile_definitions(notepad PRIVATE
-    UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS
-    LANGUAGE_BG_BG
-    LANGUAGE_CS_CZ
-    LANGUAGE_DA_DK
-    LANGUAGE_DE_DE
-    LANGUAGE_EL_GR
-    LANGUAGE_EN_US
-    LANGUAGE_ES_ES
-    LANGUAGE_ET_EE
-    LANGUAGE_EU_ES
-    LANGUAGE_FI_FI
-    LANGUAGE_FR_FR
-    LANGUAGE_HE_IL
-    LANGUAGE_HI_IN
-    LANGUAGE_HR_HR
-    LANGUAGE_HU_HU
-    LANGUAGE_HY_AM
-    LANGUAGE_ID_ID
-    LANGUAGE_IT_IT
-    LANGUAGE_JA_JP
-    LANGUAGE_KO_KR
-    LANGUAGE_LT_LT
-    LANGUAGE_MS_MY
-    LANGUAGE_NB_NO
-    LANGUAGE_NL_NL
-    LANGUAGE_NO_NO
-    LANGUAGE_PL_PL
-    LANGUAGE_PT_BR
-    LANGUAGE_PT_PT
-    LANGUAGE_RO_RO
-    LANGUAGE_RU_RU
-    LANGUAGE_SK_SK
-    LANGUAGE_SL_SI
-    LANGUAGE_SQ_AL
-    LANGUAGE_SV_SE
-    LANGUAGE_TH_TH
-    LANGUAGE_TR_TR
-    LANGUAGE_UK_UA
-    LANGUAGE_UZ_UZ
-    LANGUAGE_ZH_CN
-    LANGUAGE_ZH_HK
-    LANGUAGE_ZH_TW)
+target_compile_definitions(pnotepad PRIVATE UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS)
 
 if (NOT MSVC)
-    target_link_options(notepad BEFORE PRIVATE -municode)
+    target_link_options(pnotepad BEFORE PRIVATE -municode)
 endif()
 
-target_include_directories(notepad PRIVATE ./ reactos/)
-target_link_libraries(notepad PRIVATE user32 gdi32 comctl32 comdlg32 advapi32 shell32 msvcrt kernel32)
+target_link_libraries(pnotepad PRIVATE user32 gdi32 comctl32 comdlg32 advapi32 shell32 msvcrt kernel32)
 
 if (MSVC)
     # Use wWinMain
-    target_link_options(notepad PRIVATE "/entry:wWinMainCRTStartup")
+    target_link_options(pnotepad PRIVATE "/entry:wWinMainCRTStartup")
 
     # No default manifest
-    target_link_options(notepad PRIVATE /MANIFEST:NO)
+    target_link_options(pnotepad PRIVATE /MANIFEST:NO)
 endif()
 
 ##############################################################################

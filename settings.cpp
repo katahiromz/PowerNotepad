@@ -1,5 +1,5 @@
 /*
- * PROJECT:    ReactOS Notepad
+ * PROJECT:    Power Notepad
  * LICENSE:    LGPL-2.1-or-later (https://spdx.org/licenses/LGPL-2.1-or-later)
  * PURPOSE:    Providing a Windows-compatible simple text editor for ReactOS
  * COPYRIGHT:  Copyright 1998,99 Marcel Baur <mbaur@g26.ethz.ch>
@@ -11,8 +11,7 @@
 
 #include <winreg.h>
 
-static LPCTSTR s_szRegistryKey = _T("Software\\Microsoft\\Notepad");
-
+static LPCTSTR s_szRegistryKey = _T("Software\\Katayama Hirofumi MZ\\PowerNotepad");
 
 static LONG HeightFromPointSize(DWORD dwPointSize)
 {
@@ -47,7 +46,7 @@ QueryGeneric(HKEY hKey, LPCTSTR pszValueNameT, DWORD dwExpectedType,
              LPVOID pvResult, DWORD dwResultSize)
 {
     DWORD dwType, cbData;
-    LPVOID *pTemp = _alloca(dwResultSize);
+    LPVOID *pTemp = (LPVOID *)_alloca(dwResultSize);
 
     ZeroMemory(pTemp, dwResultSize);
 
@@ -100,7 +99,7 @@ static BOOL QueryString(HKEY hKey, LPCTSTR pszValueName, LPTSTR pszResult, DWORD
 /***********************************************************************
  *           NOTEPAD_LoadSettingsFromRegistry
  *
- *  Load settings from registry HKCU\Software\Microsoft\Notepad.
+ *  Load settings from registry HKCU\Software\Katayama Hirofumi MZ\PowerNotepad.
  */
 void NOTEPAD_LoadSettingsFromRegistry(PWINDOWPLACEMENT pWP)
 {
@@ -231,7 +230,7 @@ static BOOL SaveString(HKEY hKey, LPCTSTR pszValueNameT, LPCTSTR pszValue)
 /***********************************************************************
  *           NOTEPAD_SaveSettingsToRegistry
  *
- *  Save settings to registry HKCU\Software\Microsoft\Notepad.
+ *  Save settings to registry HKCU\Software\Katayama Hirofumi MZ\PowerNotepad.
  */
 void NOTEPAD_SaveSettingsToRegistry(void)
 {

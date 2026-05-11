@@ -1,5 +1,5 @@
 /*
- * PROJECT:    ReactOS Notepad
+ * PROJECT:    Power Notepad
  * LICENSE:    LGPL-2.1-or-later (https://spdx.org/licenses/LGPL-2.1-or-later)
  * PURPOSE:    Providing a Windows-compatible simple text editor for ReactOS
  * COPYRIGHT:  Copyright 1998,99 Marcel Baur <mbaur@g26.ethz.ch>
@@ -322,13 +322,13 @@ static BOOL DoPrintPage(PPRINT_DATA pData, DWORD PageCount)
             RECT rc = pData->printRect;
             rc.bottom = rc.top + pData->cyHeader;
 
-            hOldFont = SelectObject(pPrinter->hDC, pData->hHeaderFont);
+            hOldFont = (HFONT)SelectObject(pPrinter->hDC, pData->hHeaderFont);
             DrawHeaderOrFooter(pPrinter->hDC, &rc, Globals.szHeader, PageCount, &pData->stNow);
             SelectObject(pPrinter->hDC, hOldFont); /* De-select the font */
         }
     }
 
-    hOldFont = SelectObject(pPrinter->hDC, pData->hBodyFont);
+    hOldFont = (HFONT)SelectObject(pPrinter->hDC, pData->hBodyFont);
     ret = DoPrintBody(pData, PageCount, bSkipPage);
     SelectObject(pPrinter->hDC, hOldFont);
     if (!ret)
@@ -343,7 +343,7 @@ static BOOL DoPrintPage(PPRINT_DATA pData, DWORD PageCount)
             RECT rc = pData->printRect;
             rc.top = rc.bottom - pData->cyFooter;
 
-            hOldFont = SelectObject(pPrinter->hDC, pData->hHeaderFont);
+            hOldFont = (HFONT)SelectObject(pPrinter->hDC, pData->hHeaderFont);
             DrawHeaderOrFooter(pPrinter->hDC, &rc, Globals.szFooter, PageCount, &pData->stNow);
             SelectObject(pPrinter->hDC, hOldFont);
         }
@@ -410,7 +410,7 @@ static BOOL DoPrintDocument(PPRINT_DATA printData)
         printData->cchText = GetWindowTextLength(Globals.hEdit);
 
     /* Allocate a buffer for the text */
-    printData->pszText = HeapAlloc(GetProcessHeap(), 0, (printData->cchText + 1) * sizeof(TCHAR));
+    printData->pszText = (LPTSTR)HeapAlloc(GetProcessHeap(), 0, (printData->cchText + 1) * sizeof(TCHAR));
     if (!printData->pszText)
     {
         printData->status = STRING_PRINTFAILED;
@@ -433,7 +433,7 @@ static BOOL DoPrintDocument(PPRINT_DATA printData)
     }
 
     /* Calculate the header and footer heights */
-    hOldFont = SelectObject(pPrinter->hDC, printData->hHeaderFont);
+    hOldFont = (HFONT)SelectObject(pPrinter->hDC, printData->hHeaderFont);
     GetTextMetrics(pPrinter->hDC, &tmHeader);
     printData->cyHeader = printData->cyFooter = 2 * tmHeader.tmHeight;
     printData->cySpacing = Y_POINTS_TO_PIXELS(pPrinter->hDC, SPACING_HEIGHT);
@@ -482,7 +482,7 @@ Quit:
 
 static DWORD WINAPI PrintThreadFunc(LPVOID arg)
 {
-    PPRINT_DATA pData = arg;
+    PPRINT_DATA pData = (PPRINT_DATA)arg;
     pData->currentPage = 1;
     pData->status = STRING_NOWPRINTING;
     PostMessage(pData->hwndDlg, PRINTING_MESSAGE, 0, 0);
@@ -555,7 +555,7 @@ DIALOG_Printing_DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             if (s_hThread)
                 CloseHandle(s_hThread);
             DeleteDC(s_pData->printer.hDC);
-            s_pData = LocalFree(s_pData);
+            s_pData = (PPRINT_DATA)LocalFree(s_pData);
             break;
     }
 
@@ -566,7 +566,7 @@ VOID DIALOG_FilePrint(VOID)
 {
     BOOL ret;
     LPPRINTDLG printer;
-    PPRINT_DATA printData = LocalAlloc(LPTR, sizeof(PRINT_DATA));
+    PPRINT_DATA printData = (PPRINT_DATA)LocalAlloc(LPTR, sizeof(PRINT_DATA));
     if (!printData)
     {
         ShowLastError();

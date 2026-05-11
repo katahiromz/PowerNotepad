@@ -1,5 +1,5 @@
 /*
- * PROJECT:    ReactOS Notepad
+ * PROJECT:    Power Notepad
  * LICENSE:    LGPL-2.1-or-later (https://spdx.org/licenses/LGPL-2.1-or-later)
  * PURPOSE:    Providing a Windows-compatible simple text editor for ReactOS
  * COPYRIGHT:  Copyright 1998,99 Marcel Baur <mbaur@g26.ethz.ch>
@@ -274,7 +274,7 @@ static BOOL DoSaveFile(VOID)
     else
     {
         HLOCAL hLocal = (HLOCAL)SendMessageW(Globals.hEdit, EM_GETHANDLE, 0, 0);
-        LPWSTR pszText = LocalLock(hLocal);
+        LPWSTR pszText = (LPWSTR)LocalLock(hLocal);
         if (pszText)
         {
             bRet = WriteText(hFile, pszText, cchText, Globals.encFile, Globals.iEoln);
@@ -681,7 +681,7 @@ VOID DoCreateEditWindow(VOID)
         if (iSize)
         {
             /* Allocates temporary buffer. */
-            pTemp = HeapAlloc(GetProcessHeap(), 0, (iSize + 1) * sizeof(TCHAR));
+            pTemp = (LPTSTR)HeapAlloc(GetProcessHeap(), 0, (iSize + 1) * sizeof(TCHAR));
             if (!pTemp)
             {
                 ShowLastError();

@@ -1,5 +1,5 @@
 /*
- * PROJECT:    ReactOS Notepad
+ * PROJECT:    Power Notepad
  * LICENSE:    LGPL-2.1-or-later (https://spdx.org/licenses/LGPL-2.1-or-later)
  * PURPOSE:    Providing a Windows-compatible simple text editor for ReactOS
  * COPYRIGHT:  Copyright 1997,98 Marcel Baur <mbaur@g26.ethz.ch>
@@ -15,19 +15,19 @@
     #define STRSAFE_NO_DEPRECATE
 #endif
 
-#include <windef.h>
-#include <winbase.h>
-#include <winuser.h>
-#include <winnls.h>
-#include <wingdi.h>
+#define NOMINMAX
+#include <windows.h>
 #include <shellapi.h>
 #include <commdlg.h>
 #include <tchar.h>
 #include <stdlib.h>
 #include <malloc.h>
+#include <algorithm>
+using std::max;
+using std::min;
 
 #include "dialog.h"
-#include "notepad_res.h"
+#include "resource.h"
 
 #define EDIT_STYLE_WRAP (WS_CHILD | WS_VSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | ES_NOHIDESEL)
 #define EDIT_STYLE      (EDIT_STYLE_WRAP | WS_HSCROLL | ES_AUTOHSCROLL)
