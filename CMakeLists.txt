@@ -41,7 +41,7 @@ if (NOT MSVC)
     target_link_options(pnotepad BEFORE PRIVATE -municode)
 endif()
 
-target_link_libraries(pnotepad PRIVATE user32 gdi32 comctl32 comdlg32 advapi32 shell32 msvcrt kernel32)
+target_link_libraries(pnotepad PRIVATE user32 gdi32 comctl32 comdlg32 advapi32 shell32 kernel32)
 
 if (MSVC)
     # Use wWinMain
