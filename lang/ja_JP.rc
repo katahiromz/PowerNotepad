@@ -211,7 +211,7 @@ STRINGTABLE
     IDS_NOTFOUND, "'%s' は見つかりませんでした"
     IDS_OUT_OF_MEMORY, "この操作を実行するためのメモリが足りません。\nメモリの空きを増やすためにいくつかのアプリケーションを\n終了して下さい。"
     IDS_CANNOTFIND, "'%s' が見つかりませんでした。"
-    IDS_INVALID_REGEX, "正規表現 '%s' が不正です。"
+    IDS_INVALID_REGEX, "正規表現が不正です"
     IDS_ANSI, "ANSI"
     IDS_UNICODE, "Unicode"
     IDS_UNICODE_BE, "Unicode (big endian)"

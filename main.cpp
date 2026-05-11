@@ -252,10 +252,14 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
         {
             if (bShowAlert)
             {
+                /* Build a readable message: "Invalid regular expression 'pattern':\n<detail>"
+                   so the user can diagnose their regex without needing to consult docs. */
                 LoadString(Globals.hInstance, IDS_INVALID_REGEX, szResource, _countof(szResource));
-                StringCchPrintf(szText, _countof(szText), szResource, pFindReplace->lpstrFindWhat);
-                LoadString(Globals.hInstance, IDS_NOTEPAD, szResource, _countof(szResource));
-                MessageBox(Globals.hFindReplaceDlg, szText, szResource, MB_OK);
+                std::wstring fullMsg = szResource
+                                       + std::wstring(L" '") + pFindReplace->lpstrFindWhat
+                                       + L"':\n" + errMsg;
+                LoadString(Globals.hInstance, IDS_NOTEPAD, szText, _countof(szText));
+                MessageBox(Globals.hFindReplaceDlg, fullMsg.c_str(), szText, MB_OK | MB_ICONERROR);
             }
             return FALSE;
         }

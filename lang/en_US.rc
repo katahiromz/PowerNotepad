@@ -251,7 +251,7 @@ STRINGTABLE
     IDS_NOTFOUND, "'%s' can not be found."
     IDS_OUT_OF_MEMORY, "Not enough memory to complete this task.\nClose one or more applications to increase the amount of\nfree memory."
     IDS_CANNOTFIND, "Cannot find '%s'"
-    IDS_INVALID_REGEX, "Invalid regular expression '%s'"
+    IDS_INVALID_REGEX, "Invalid regular expression"
     IDS_ANSI, "ANSI"
     IDS_UNICODE, "Unicode"
     IDS_UNICODE_BE, "Unicode (big endian)"
