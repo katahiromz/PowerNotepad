@@ -830,6 +830,7 @@ static VOID DIALOG_ReadFindReplace(HWND hDlg, PFINDREPLACEDX pFR, BOOL bReplace)
     if (IsDlgButtonChecked(hDlg, chx2) == BST_CHECKED) pFR->Flags |= FR_WHOLEWORD;
     if (IsDlgButtonChecked(hDlg, rad2) == BST_CHECKED) pFR->Flags |= FR_DOWN;
     pFR->bRegExp = (IsDlgButtonChecked(hDlg, chx3) == BST_CHECKED);
+    pFR->bCyclic = FALSE;
 }
 
 /* Registered message ID for find/replace notifications (cached on first use) */
@@ -1372,6 +1373,7 @@ VOID DIALOG_CyclicReplace(VOID)
         find.lpstrReplaceWith = &data.strReplace[0];
         find.wReplaceWithLen = (WORD)lstrlenW(find.lpstrReplaceWith);
         find.bRegExp = TRUE;
+        find.bCyclic = TRUE;
         find.Flags &= ~(FR_WHOLEWORD | FR_MATCHCASE);
         find.Flags |= FR_DOWN;
         if (data.bMatchCase)

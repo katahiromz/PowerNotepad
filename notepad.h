@@ -60,6 +60,7 @@ typedef enum
 typedef struct tagFINDREPLACEDX : FINDREPLACE
 {
     BOOL bRegExp;
+    BOOL bCyclic;
 } FINDREPLACEDX, *PFINDREPLACEDX;
 
 #define MAX_FINDREPLACE_LENGTH 512
