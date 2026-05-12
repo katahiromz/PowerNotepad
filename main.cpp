@@ -298,10 +298,12 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
         return FALSE;
 
     SendMessage(Globals.hEdit, EM_GETSEL, (WPARAM) &dwBegin, (LPARAM) &dwEnd);
+
+    DWORD dwBeginBeforeReplace = dwBegin;
+    BOOL bSelectionMatched = FALSE;
+
     if (bReplace && dwEnd > dwBegin)
     {
-        BOOL bSelectionMatched = FALSE;
-
         if (bUseRegex)
         {
             if (pszText && dwEnd <= (DWORD)iTextLength)
@@ -355,6 +357,7 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
     }
 
     dwMatchEnd = dwEnd;
+
     if (pFindReplace->Flags & FR_DOWN)
     {
         /* Find Down */
@@ -379,12 +382,14 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
     else
     {
         /* Find Up */
+        DWORD dwSearchLimit = bSelectionMatched ? dwBeginBeforeReplace : dwBegin;
         dwPosition = dwBegin;
+
         if (bUseRegex)
         {
             bMatches = (pszText &&
                         NOTEPAD_FindRegexUp(pFindReplace, regexFind, pszText, iTextLength,
-                                            dwBegin, &dwPosition, &dwMatchEnd));
+                                            dwSearchLimit, &dwPosition, &dwMatchEnd));
         }
         else while(dwPosition > 0)
         {

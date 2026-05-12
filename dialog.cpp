@@ -1211,7 +1211,6 @@ DIALOG_CyclicReplace_OnUpdate(PCYCLIC_REPLACE pThis, HWND hwnd)
     pThis->strReplace = std::move(strReplace);
 
     // Set Info
-    WCHAR text[256];
     if (pThis->items.size() < 2)
     {
         LoadStringW(Globals.hInstance, IDS_WANTTWOITEMS, text, _countof(text));
