@@ -9,14 +9,14 @@ It's a free and open source text editor.
 ## Features
 
 - Can be used like Notepad.
-- Supports regular expression replacement and cyclic replacement.
+- Supports regular expression replacement, "Cyclic Replacement", and "Replace multiple at once".
 - Able to generate GUID.
 
 ## Supported environments
 
 - Windows 11, Windows 10, Windows 7, Windows Vista and Windows XP.
 
-## About cyclic replacement
+## Cyclic Replace
 
 You can execute a cyclic replacement by selecting "Cyclic Replace" from the "Edit" menu.
 
