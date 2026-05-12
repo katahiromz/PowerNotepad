@@ -202,36 +202,13 @@ FONT 9, "MS UI Gothic"
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// RT_ACCELERATOR
-
-515 ACCELERATORS
-{
-    "A", IDC_SELECT_ALL, CONTROL, VIRTKEY
-    "C", IDC_COPY, CONTROL, VIRTKEY
-    "F", IDC_SEARCH, CONTROL, VIRTKEY
-    "G", IDC_GOTO, CONTROL, VIRTKEY
-    "H", IDC_REPLACE, CONTROL, VIRTKEY
-    "N", IDC_NEW, CONTROL, VIRTKEY
-    "N", IDC_NEW_WINDOW, CONTROL, SHIFT, VIRTKEY
-    "O", IDC_OPEN, CONTROL, VIRTKEY
-    "P", IDC_PRINT, CONTROL, VIRTKEY
-    "S", IDC_SAVE, CONTROL, VIRTKEY
-    "V", IDC_PASTE, CONTROL, VIRTKEY
-    "X", IDC_CUT, CONTROL, VIRTKEY
-    "Z", IDC_UNDO, CONTROL, VIRTKEY
-    VK_F3, IDC_SEARCH_NEXT, VIRTKEY
-    VK_F3, IDC_SEARCH_PREV, SHIFT, VIRTKEY
-    VK_F5, IDC_TIME_DATE, VIRTKEY
-}
-
-//////////////////////////////////////////////////////////////////////////////
 // RT_STRING
 
 STRINGTABLE
 {
     IDS_PAGESETUP_HEADERVALUE, "&f"
     IDS_PAGESETUP_FOOTERVALUE, "ページ &p"
-    IDS_NOTEPAD, "Power Notepad"
+    IDS_NOTEPAD, "PowerNote"
     IDS_ERROR, "エラー"
     IDS_WARNING, "警告"
     IDS_INFO, "情報"

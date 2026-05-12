@@ -1,5 +1,5 @@
 /*
- * PROJECT:    Power Notepad
+ * PROJECT:    PowerNote
  * LICENSE:    LGPL-2.1-or-later (https://spdx.org/licenses/LGPL-2.1-or-later)
  * PURPOSE:    PCRE2 16-bit regex engine implementation
  * COPYRIGHT:  Copyright 2024 Katayama Hirofumi MZ

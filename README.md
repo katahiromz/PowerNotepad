@@ -1,6 +1,6 @@
-# ![](img/mainicon-32x32.png) Power Notepad
+# ![](img/mainicon-32x32.png) PowerNote
 
-This is "Power Notepad".
+This is "PowerNote".
 
 ![(The screenshot)](img/screenshot.gif)
 
@@ -21,8 +21,8 @@ It's a free and open source software for Windows XP and later.
 Please use ReactOS Build Environment (RosBE).
 
 ```bash
-git clone https://github.com/katahiromz/PowerNotepad
-cd PowerNotepad
+git clone https://github.com/katahiromz/PowerNote
+cd PowerNote
 cmake -G Ninja -DCMAKE_BUILD_TYPE=Release .
 ninja
 strip notepad.exe

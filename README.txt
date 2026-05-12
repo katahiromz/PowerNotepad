@@ -1,6 +1,6 @@
-# Power Notepad
+# PowerNote
 
-This is "Power Notepad".
+This is "PowerNote".
 
 It's a free and open source software for Windows XP and later.
 

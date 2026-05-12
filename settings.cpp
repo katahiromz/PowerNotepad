@@ -1,5 +1,5 @@
 /*
- * PROJECT:    Power Notepad
+ * PROJECT:    PowerNote
  * LICENSE:    LGPL-2.1-or-later (https://spdx.org/licenses/LGPL-2.1-or-later)
  * PURPOSE:    Providing a Windows-compatible simple text editor for ReactOS
  * COPYRIGHT:  Copyright 1998,99 Marcel Baur <mbaur@g26.ethz.ch>
@@ -11,7 +11,7 @@
 
 #include <winreg.h>
 
-static LPCTSTR s_szRegistryKey = _T("Software\\Katayama Hirofumi MZ\\PowerNotepad");
+static LPCTSTR s_szRegistryKey = _T("Software\\Katayama Hirofumi MZ\\PowerNote");
 
 static LONG HeightFromPointSize(DWORD dwPointSize)
 {
@@ -99,7 +99,7 @@ static BOOL QueryString(HKEY hKey, LPCTSTR pszValueName, LPTSTR pszResult, DWORD
 /***********************************************************************
  *           NOTEPAD_LoadSettingsFromRegistry
  *
- *  Load settings from registry HKCU\Software\Katayama Hirofumi MZ\PowerNotepad.
+ *  Load settings from registry HKCU\Software\Katayama Hirofumi MZ\PowerNote.
  */
 void NOTEPAD_LoadSettingsFromRegistry(PWINDOWPLACEMENT pWP)
 {
@@ -220,7 +220,7 @@ static BOOL SaveString(HKEY hKey, LPCTSTR pszValueNameT, LPCTSTR pszValue)
 /***********************************************************************
  *           NOTEPAD_SaveSettingsToRegistry
  *
- *  Save settings to registry HKCU\Software\Katayama Hirofumi MZ\PowerNotepad.
+ *  Save settings to registry HKCU\Software\Katayama Hirofumi MZ\PowerNote.
  */
 void NOTEPAD_SaveSettingsToRegistry(void)
 {
