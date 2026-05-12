@@ -1,6 +1,6 @@
 # ![](img/mainicon-32x32.png) PowerNote
 
-![(The screenshot)](img/screenshot.gif)
+![(The screenshot)](img/screenshot.png)
 
 ## What's this?
 
