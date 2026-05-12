@@ -1110,8 +1110,8 @@ VOID DIALOG_HelpAboutNotepad(VOID)
 typedef struct CYCLIC_REPLACE
 {
     std::vector<std::wstring> items;
+    BOOL bMatchCase;
     BOOL bWholeWord;
-    BOOL bIgnoreCase;
     std::wstring text;
     std::wstring strFind;
     std::wstring strReplace;
@@ -1129,6 +1129,8 @@ DIALOG_AddItem_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             s_pThis = (PCYCLIC_REPLACE)lParam;
             SendDlgItemMessage(hwnd, edt1, EM_LIMITTEXT, MAX_FINDREPLACE_LENGTH - 1, 0);
+            HWND hwndOK = GetDlgItem(hwnd, IDOK);
+            EnableWindow(hwndOK, FALSE);
             return TRUE;
         }
         case WM_COMMAND:
@@ -1142,14 +1144,19 @@ DIALOG_AddItem_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                         s_pThis->text = text;
                         EndDialog(hwnd, IDOK);
                     }
-                    else
-                    {
-                        
-                    }
                     break;
                 case IDCANCEL:
                     EndDialog(hwnd, IDCANCEL);
                     break;
+                case edt1:
+                {
+                    if (HIWORD(wParam) == EN_CHANGE)
+                    {
+                        HWND hwndOK = GetDlgItem(hwnd, IDOK);
+                        EnableWindow(hwndOK, GetWindowTextLength(GetDlgItem(hwnd, edt1)) > 0);
+                        break;
+                    }
+                }
             }
         }
     }
@@ -1241,6 +1248,9 @@ DIALOG_CyclicReplace_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             s_pThis = (PCYCLIC_REPLACE)lParam;
             SendDlgItemMessage(hwnd, lst1, LB_SETITEMHEIGHT, 0, 24);
 
+            CheckDlgButton(hwnd, chx1, (s_pThis->bMatchCase ? BST_CHECKED : BST_UNCHECKED));
+            CheckDlgButton(hwnd, chx2, (s_pThis->bWholeWord ? BST_CHECKED : BST_UNCHECKED));
+
             HWND hLst1 = GetDlgItem(hwnd, lst1);
             for (size_t iItem = 0; iItem < s_pThis->items.size(); ++iItem)
             {
@@ -1256,8 +1266,8 @@ DIALOG_CyclicReplace_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             {
                 case IDOK:
                 {
+                    s_pThis->bMatchCase = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
                     s_pThis->bWholeWord = IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED;
-                    s_pThis->bIgnoreCase = IsDlgButtonChecked(hwnd, chx1) != BST_CHECKED;
                     DIALOG_CyclicReplace_OnUpdate(s_pThis, hwnd);
 
                     EndDialog(hwnd, IDOK);
@@ -1342,7 +1352,7 @@ VOID DIALOG_CyclicReplace(VOID)
 {
     CYCLIC_REPLACE data;
     data.bWholeWord = !!(Globals.find.Flags & FR_WHOLEWORD);
-    data.bIgnoreCase = !(Globals.find.Flags & FR_MATCHCASE);
+    data.bMatchCase = !!(Globals.find.Flags & FR_MATCHCASE);
     data.items = Globals.CyclicReplaceItems;
     INT_PTR id = DialogBoxParam(Globals.hInstance,
                                 MAKEINTRESOURCE(IDD_CYCLICREPLACE), Globals.hMainWnd,
@@ -1361,7 +1371,7 @@ VOID DIALOG_CyclicReplace(VOID)
         find.bRegExp = TRUE;
         find.Flags &= ~(FR_WHOLEWORD | FR_MATCHCASE);
         find.Flags |= FR_DOWN;
-        if (!data.bIgnoreCase)
+        if (data.bMatchCase)
             find.Flags |= FR_MATCHCASE;
 
         NOTEPAD_ReplaceAll(&find);
@@ -1369,7 +1379,7 @@ VOID DIALOG_CyclicReplace(VOID)
         Globals.find.Flags &= ~(FR_WHOLEWORD | FR_MATCHCASE);
         if (data.bWholeWord)
             Globals.find.Flags |= FR_WHOLEWORD;
-        if (data.bIgnoreCase)
+        if (data.bMatchCase)
             Globals.find.Flags |= FR_MATCHCASE;
         Globals.CyclicReplaceItems = std::move(data.items);
 
