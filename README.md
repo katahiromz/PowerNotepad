@@ -1,10 +1,20 @@
 # ![](img/mainicon-32x32.png) PowerNote
 
-This is "PowerNote".
-
 ![(The screenshot)](img/screenshot.gif)
 
-It's a free and open source software for Windows XP and later.
+## What's this?
+
+It's a free and open source text editor.
+
+## Features
+
+- Can be used like Notepad.
+- Supports regular expression replacement and cyclic replacement.
+- Able to generate GUID.
+
+## Supported environments
+
+- Windows 11, Windows 10, Windows 7, Windows Vista and Windows XP.
 
 ## Main code contributors
 
@@ -13,21 +23,13 @@ It's a free and open source software for Windows XP and later.
 - Copyright 2000 Mike McCormack (Mike_McCormack@looksmart.com.au)
 - Copyright 2002 Andriy Palamarchuk
 - Copyright 2002 Sylvain Petreolle (spetreolle@yahoo.fr)
-- Copyright 2019-2023 Katayama Hirofumi MZ (katayama.hirofumi.mz@gmail.com)
+- Copyright 2019-2026 Katayama Hirofumi MZ (katayama.hirofumi.mz@gmail.com)
 - and more!
-
-## How to build?
-
-Please use ReactOS Build Environment (RosBE).
-
-```bash
-git clone https://github.com/katahiromz/PowerNote
-cd PowerNote
-cmake -G Ninja -DCMAKE_BUILD_TYPE=Release .
-ninja
-strip notepad.exe
-```
 
 ## License
 
 - LGPL 2.1 and later
+
+## Contact
+
+- Katayama Hirofumi MZ (katahiromz) <katayama.hirofumi.mz@gmail.com>
