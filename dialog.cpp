@@ -1169,6 +1169,7 @@ DIALOG_CyclicReplace_OnUpdate(PCYCLIC_REPLACE pThis, HWND hwnd)
     HWND hLst1 = GetDlgItem(hwnd, lst1);
     size_t cItems = ListBox_GetCount(hLst1);
 
+    // Get items
     WCHAR text[MAX_FINDREPLACE_LENGTH];
     pThis->items.clear();
     for (INT iItem = 0; iItem < cItems; ++iItem)
@@ -1177,6 +1178,7 @@ DIALOG_CyclicReplace_OnUpdate(PCYCLIC_REPLACE pThis, HWND hwnd)
         pThis->items.push_back(text);
     }
 
+    // Set strFind
     std::wstring strFind = L"(";
     for (size_t iItem = 0; iItem < cItems; ++iItem)
     {
@@ -1196,6 +1198,7 @@ DIALOG_CyclicReplace_OnUpdate(PCYCLIC_REPLACE pThis, HWND hwnd)
     strFind += L")";
     pThis->strFind = std::move(strFind);
 
+    // Set strReplace
     std::wstring strReplace;
     for (size_t iItem = 0; iItem < cItems; ++iItem)
     {
@@ -1207,15 +1210,15 @@ DIALOG_CyclicReplace_OnUpdate(PCYCLIC_REPLACE pThis, HWND hwnd)
     }
     pThis->strReplace = std::move(strReplace);
 
+    // Set Info
+    WCHAR text[256];
     if (pThis->items.size() < 2)
     {
-        WCHAR text[256];
         LoadStringW(Globals.hInstance, IDS_WANTTWOITEMS, text, _countof(text));
         SetDlgItemTextW(hwnd, edt1, text);
     }
     else
     {
-        WCHAR text[256];
         LoadStringW(Globals.hInstance, IDS_CYCLICREPLACEINFO, text, _countof(text));
 
         std::wstring str = text;
@@ -1264,7 +1267,7 @@ DIALOG_CyclicReplace_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             switch (LOWORD(wParam))
             {
-                case IDOK:
+                case IDOK: // Replace All
                 {
                     s_pThis->bMatchCase = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
                     s_pThis->bWholeWord = IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED;
