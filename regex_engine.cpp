@@ -283,7 +283,8 @@ bool RegexEngine::ReplaceMatch(const wchar_t *text, size_t textLen,
     uint32_t subOpts =
         PCRE2_ANCHORED |
         PCRE2_SUBSTITUTE_EXTENDED |
-        PCRE2_SUBSTITUTE_OVERFLOW_LENGTH;
+        PCRE2_SUBSTITUTE_OVERFLOW_LENGTH |
+        PCRE2_SUBSTITUTE_UNSET_EMPTY;
 
     int rc = pcre2_substitute_16(
         static_cast<PCRE2Code *>(m_code),
@@ -310,7 +311,7 @@ bool RegexEngine::ReplaceMatch(const wchar_t *text, size_t textLen,
             reinterpret_cast<PCRE2_SPTR16>(subject),
             subjectLen,
             0,
-            PCRE2_ANCHORED | PCRE2_SUBSTITUTE_EXTENDED,
+            PCRE2_ANCHORED | PCRE2_SUBSTITUTE_EXTENDED | PCRE2_SUBSTITUTE_UNSET_EMPTY,
             nullptr, nullptr,
             reinterpret_cast<PCRE2_SPTR16>(replacement),
             PCRE2_ZERO_TERMINATED,
@@ -323,4 +324,22 @@ bool RegexEngine::ReplaceMatch(const wchar_t *text, size_t textLen,
 
     result.resize(outputLen);
     return true;
+}
+
+std::wstring RegexEngine::EscapeForRegex(const std::wstring& input)
+{
+    // meta characters
+    static const wchar_t kMeta[] = L"\\.^$*+?()[]{}|";
+
+    std::wstring result;
+    result.reserve(input.size() * 2);
+
+    for (wchar_t ch : input)
+    {
+        if (std::wcschr(kMeta, ch))
+            result += L'\\';
+        result += ch;
+    }
+
+    return result;
 }

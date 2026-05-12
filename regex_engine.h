@@ -75,6 +75,8 @@ public:
                       const wchar_t *replacement,
                       std::wstring &result) const;
 
+    static std::wstring EscapeForRegex(const std::wstring& input);
+
 private:
     void *m_code;       /* pcre2_code_16*       */
     void *m_matchData;  /* pcre2_match_data_16* */
