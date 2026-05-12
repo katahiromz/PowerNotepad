@@ -1414,6 +1414,7 @@ VOID DIALOG_CyclicReplace(VOID)
         find.wReplaceWithLen = (WORD)lstrlenW(find.lpstrReplaceWith);
         find.bRegExp = TRUE;
         find.bCyclic = TRUE;
+        find.bMultiple = FALSE;
         find.Flags &= ~(FR_WHOLEWORD | FR_MATCHCASE);
         find.Flags |= FR_DOWN;
         if (data.bMatchCase)
@@ -1428,6 +1429,299 @@ VOID DIALOG_CyclicReplace(VOID)
             Globals.find.Flags |= FR_MATCHCASE;
         delete Globals.pCyclicReplaceItems;
         Globals.pCyclicReplaceItems = new std::vector<std::wstring>(std::move(data.items));
+
+        WaitCursor(FALSE);
+    }
+}
+
+typedef struct REPLACE_MULTIPLE_AT_ONCE
+{
+    std::vector<std::pair<std::wstring, std::wstring> > pairs;
+    BOOL bMatchCase;
+    BOOL bWholeWord;
+    std::pair<std::wstring, std::wstring> pair;
+    std::wstring strFind;
+    std::wstring strReplace;
+} REPLACE_MULTIPLE_AT_ONCE, *PREPLACE_MULTIPLE_AT_ONCE;
+
+static void DIALOG_ReplaceMultiple_OnUpdate(PREPLACE_MULTIPLE_AT_ONCE pThis, HWND hwnd)
+{
+    size_t cItems = pThis->pairs.size();
+
+    // Set strFind
+    std::wstring strFind = L"(";
+    for (size_t iItem = 0; iItem < cItems; ++iItem)
+    {
+        if (iItem != 0)
+            strFind += L")|(";
+        if (pThis->bWholeWord)
+        {
+            strFind += L"\\b";
+            strFind += RegexEngine::EscapeForRegex(pThis->pairs[iItem].first);
+            strFind += L"\\b";
+        }
+        else
+        {
+            strFind += RegexEngine::EscapeForRegex(pThis->pairs[iItem].first);
+        }
+    }
+    strFind += L")";
+    pThis->strFind = std::move(strFind);
+
+    // Set strReplace
+    std::wstring strReplace;
+    for (size_t iItem = 0; iItem < cItems; ++iItem)
+    {
+        strReplace += L"${";
+        strReplace += std::to_wstring(iItem % cItems + 1);
+        strReplace += L":+";
+        strReplace += RegexEngine::EscapeForRegex(pThis->pairs[iItem % cItems].second);
+        strReplace += L":}";
+    }
+    pThis->strReplace = std::move(strReplace);
+
+    // Set Info
+    WCHAR text[MAX_FINDREPLACE_LENGTH];
+    if (pThis->pairs.size() < 1)
+    {
+        LoadStringW(Globals.hInstance, IDS_WANTONEITEM, text, _countof(text));
+        SetDlgItemTextW(hwnd, edt1, text);
+    }
+    else
+    {
+        BOOL bWarning = FALSE;
+        if (cItems > 0)
+        {
+            for (size_t iItem0 = 0; iItem0 < cItems - 1; ++iItem0)
+            {
+                auto& pair0 = pThis->pairs[iItem0];
+                for (size_t iItem1 = iItem0 + 1; iItem1 < cItems; ++iItem1)
+                {
+                    auto& pair1 = pThis->pairs[iItem1];
+                    if (pair1.first.find(pair0.first) != pair1.first.npos)
+                    {
+                        WCHAR format[256];
+                        LoadStringW(Globals.hInstance, IDS_CONFLICT, format, _countof(format));
+                        StringCchPrintf(text, _countof(text), format, iItem0 + 1, iItem1 + 1);
+                        SetDlgItemTextW(hwnd, edt1, text);
+                        bWarning = TRUE;
+                        goto break2;
+                    }
+                }
+            }
+        }
+break2:
+        if (!bWarning)
+            SetDlgItemTextW(hwnd, edt1, L"");
+    }
+}
+
+static INT_PTR CALLBACK
+DIALOG_AddPair_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    static PREPLACE_MULTIPLE_AT_ONCE s_pThis = NULL;
+    WCHAR first[MAX_FINDREPLACE_LENGTH], second[MAX_FINDREPLACE_LENGTH];
+
+    switch (uMsg)
+    {
+        case WM_INITDIALOG:
+        {
+            s_pThis = (PREPLACE_MULTIPLE_AT_ONCE)lParam;
+            SendDlgItemMessage(hwnd, edt1, EM_LIMITTEXT, MAX_FINDREPLACE_LENGTH - 1, 0);
+            SendDlgItemMessage(hwnd, edt2, EM_LIMITTEXT, MAX_FINDREPLACE_LENGTH - 1, 0);
+            HWND hwndOK = GetDlgItem(hwnd, IDOK);
+            EnableWindow(hwndOK, FALSE);
+            return TRUE;
+        }
+        case WM_COMMAND:
+        {
+            switch (LOWORD(wParam))
+            {
+                case IDOK:
+                    GetDlgItemTextW(hwnd, edt1, first, _countof(first));
+                    GetDlgItemTextW(hwnd, edt2, second, _countof(second));
+                    if (first[0])
+                    {
+                        s_pThis->pair = std::make_pair(first, second);
+                        EndDialog(hwnd, IDOK);
+                    }
+                    break;
+                case IDCANCEL:
+                    EndDialog(hwnd, IDCANCEL);
+                    break;
+                case edt1:
+                {
+                    if (HIWORD(wParam) == EN_CHANGE)
+                    {
+                        HWND hwndOK = GetDlgItem(hwnd, IDOK);
+                        EnableWindow(hwndOK, GetWindowTextLength(GetDlgItem(hwnd, edt1)) > 0);
+                        break;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+static INT_PTR CALLBACK
+DIALOG_ReplaceMultiple_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    static PREPLACE_MULTIPLE_AT_ONCE s_pThis = NULL;
+
+    switch (uMsg)
+    {
+    case WM_INITDIALOG:
+        {
+            s_pThis = (PREPLACE_MULTIPLE_AT_ONCE)lParam;
+            SendDlgItemMessage(hwnd, lst1, LB_SETITEMHEIGHT, 0, 24);
+
+            CheckDlgButton(hwnd, chx1, (s_pThis->bMatchCase ? BST_CHECKED : BST_UNCHECKED));
+            CheckDlgButton(hwnd, chx2, (s_pThis->bWholeWord ? BST_CHECKED : BST_UNCHECKED));
+
+            HWND hLst1 = GetDlgItem(hwnd, lst1);
+            for (size_t iItem = 0; iItem < s_pThis->pairs.size(); ++iItem)
+            {
+                std::pair<std::wstring, std::wstring>& pair = s_pThis->pairs[iItem];
+                ListBox_AddString(hLst1, (pair.first + L" >> " + pair.second).c_str());
+            }
+
+            DIALOG_ReplaceMultiple_OnUpdate(s_pThis, hwnd);
+            return TRUE;
+        }
+        case WM_COMMAND:
+        {
+            switch (LOWORD(wParam))
+            {
+                case IDOK: // Replace All
+                {
+                    s_pThis->bMatchCase = IsDlgButtonChecked(hwnd, chx1) == BST_CHECKED;
+                    s_pThis->bWholeWord = IsDlgButtonChecked(hwnd, chx2) == BST_CHECKED;
+                    DIALOG_ReplaceMultiple_OnUpdate(s_pThis, hwnd);
+                    EndDialog(hwnd, IDOK);
+                    break;
+                }
+                case IDCANCEL:
+                    EndDialog(hwnd, IDCANCEL);
+                    break;
+                case psh2: // Add Item
+                {
+                    if (DialogBoxParam(Globals.hInstance, MAKEINTRESOURCE(IDD_ADDPAIR),
+                                       hwnd, DIALOG_AddPair_DlgProc, (LPARAM)s_pThis) == IDOK)
+                    {
+                        auto& pair = s_pThis->pair;
+                        HWND hLst1 = GetDlgItem(hwnd, lst1);
+                        INT iItem = ListBox_AddString(GetDlgItem(hwnd, lst1), (pair.first + L" >> " + pair.second).c_str());
+                        ListBox_SetCurSel(hLst1, iItem);
+                        s_pThis->pairs.push_back(pair);
+                        DIALOG_ReplaceMultiple_OnUpdate(s_pThis, hwnd);
+                    }
+                    break;
+                }
+                case psh3: // Up
+                {
+                    WCHAR text1[MAX_FINDREPLACE_LENGTH], text2[MAX_FINDREPLACE_LENGTH];
+                    HWND hLst1 = GetDlgItem(hwnd, lst1);
+                    INT iItem = ListBox_GetCurSel(hLst1);
+                    if (iItem == LB_ERR || iItem == 0)
+                        break;
+                    ListBox_GetText(hLst1, iItem - 1, text1);
+                    ListBox_GetText(hLst1, iItem, text2);
+                    ListBox_DeleteString(hLst1, iItem - 1);
+                    ListBox_DeleteString(hLst1, iItem - 1);
+                    ListBox_InsertString(hLst1, iItem - 1, text1);
+                    ListBox_InsertString(hLst1, iItem - 1, text2);
+                    ListBox_SetCurSel(hLst1, iItem - 1);
+                    std::swap(s_pThis->pairs[iItem - 1], s_pThis->pairs[iItem]);
+                    DIALOG_ReplaceMultiple_OnUpdate(s_pThis, hwnd);
+                    break;
+                }
+                case psh4: // Down
+                {
+                    WCHAR text1[MAX_FINDREPLACE_LENGTH], text2[MAX_FINDREPLACE_LENGTH];
+                    HWND hLst1 = GetDlgItem(hwnd, lst1);
+                    INT iItem = ListBox_GetCurSel(hLst1);
+                    INT cItems = ListBox_GetCount(hLst1);
+                    if (iItem == LB_ERR || iItem + 1 >= cItems)
+                        break;
+                    ListBox_GetText(hLst1, iItem, text1);
+                    ListBox_GetText(hLst1, iItem + 1, text2);
+                    ListBox_DeleteString(hLst1, iItem);
+                    ListBox_DeleteString(hLst1, iItem);
+                    ListBox_InsertString(hLst1, iItem, text1);
+                    ListBox_InsertString(hLst1, iItem, text2);
+                    ListBox_SetCurSel(hLst1, iItem + 1);
+                    std::swap(s_pThis->pairs[iItem], s_pThis->pairs[iItem + 1]);
+                    DIALOG_ReplaceMultiple_OnUpdate(s_pThis, hwnd);
+                    break;
+                }
+                case psh5: // Remove
+                {
+                    HWND hLst1 = GetDlgItem(hwnd, lst1);
+                    INT iItem = ListBox_GetCurSel(hLst1);
+                    if (iItem == LB_ERR)
+                        break;
+                    ListBox_DeleteString(hLst1, iItem);
+                    ListBox_SetCurSel(hLst1, iItem);
+                    s_pThis->pairs.erase(s_pThis->pairs.begin() + iItem);
+                    DIALOG_ReplaceMultiple_OnUpdate(s_pThis, hwnd);
+                    break;
+                }
+                case psh6: // Remove All
+                {
+                    HWND hLst1 = GetDlgItem(hwnd, lst1);
+                    ListBox_ResetContent(hLst1);
+                    s_pThis->pairs.clear();
+                    DIALOG_ReplaceMultiple_OnUpdate(s_pThis, hwnd);
+                    break;
+                }
+            }
+            break;
+        }
+    }
+    return 0;
+}
+
+VOID DIALOG_ReplaceMultipleAtOnce(VOID)
+{
+    REPLACE_MULTIPLE_AT_ONCE data;
+    data.bWholeWord = !!(Globals.find.Flags & FR_WHOLEWORD);
+    data.bMatchCase = !!(Globals.find.Flags & FR_MATCHCASE);
+    if (Globals.pReplaceMultipleAtOnceItems)
+        data.pairs = *Globals.pReplaceMultipleAtOnceItems;
+    INT_PTR id = DialogBoxParam(Globals.hInstance,
+                                MAKEINTRESOURCE(IDD_REPLACEMULTIPLEATONCE), Globals.hMainWnd,
+                                DIALOG_ReplaceMultiple_DlgProc, (LPARAM)&data);
+    if (id == IDOK)
+    {
+        WaitCursor(TRUE);
+
+        FINDREPLACEDX find = Globals.find;
+        find.lStructSize = sizeof(FINDREPLACEW);
+        find.hwndOwner = Globals.hMainWnd;
+        find.lpstrFindWhat = &data.strFind[0];
+        find.wFindWhatLen = (WORD)lstrlenW(find.lpstrFindWhat);
+        find.lpstrReplaceWith = &data.strReplace[0];
+        find.wReplaceWithLen = (WORD)lstrlenW(find.lpstrReplaceWith);
+        find.bRegExp = TRUE;
+        find.bCyclic = FALSE;
+        find.bMultiple = TRUE;
+        find.Flags &= ~(FR_WHOLEWORD | FR_MATCHCASE);
+        find.Flags |= FR_DOWN;
+        if (data.bMatchCase)
+            find.Flags |= FR_MATCHCASE;
+
+        NOTEPAD_ReplaceAll(&find);
+
+        Globals.find.Flags &= ~(FR_WHOLEWORD | FR_MATCHCASE);
+        if (data.bWholeWord)
+            Globals.find.Flags |= FR_WHOLEWORD;
+        if (data.bMatchCase)
+            Globals.find.Flags |= FR_MATCHCASE;
+
+        delete Globals.pReplaceMultipleAtOnceItems;
+        Globals.pReplaceMultipleAtOnceItems = new std::vector<std::pair<std::wstring, std::wstring> >(std::move(data.pairs));
 
         WaitCursor(FALSE);
     }

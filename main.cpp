@@ -84,7 +84,7 @@ static int NOTEPAD_MenuCommand(WPARAM wParam)
     case IDC_HELP_ABOUT_NOTEPAD: DIALOG_HelpAboutNotepad(); break;
 
     case IDC_CYCLIC_REPLACE: DIALOG_CyclicReplace(); break;
-
+    case IDC_REPLACEMULTIPLEATONCE: DIALOG_ReplaceMultipleAtOnce(); break;
     default:
         break;
     }
@@ -863,6 +863,12 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE prev, LPTSTR cmdline, int sh
     {
         delete Globals.pCyclicReplaceItems;
         Globals.pCyclicReplaceItems = NULL;
+    }
+
+    if (Globals.pReplaceMultipleAtOnceItems)
+    {
+        delete Globals.pReplaceMultipleAtOnceItems;
+        Globals.pReplaceMultipleAtOnceItems = NULL;
     }
 
     return (int) msg.wParam;

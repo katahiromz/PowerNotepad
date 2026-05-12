@@ -35,6 +35,7 @@
 #define IDC_PRINTING_PAGE                   526
 #define IDC_CYCLIC_REPLACE                  527
 #define IDC_GUID                            528
+#define IDC_REPLACEMULTIPLEATONCE           529
 
 #define IDD_PAGESETUP                       514
 #define IDD_ENCODING                        516
@@ -44,6 +45,8 @@
 #define IDD_REPLACE                         525
 #define IDD_CYCLICREPLACE                   526
 #define IDD_ADDITEM                         527
+#define IDD_REPLACEMULTIPLEATONCE           528
+#define IDD_ADDPAIR                         529
 
 #define IDI_NPICON                          521
 
@@ -87,6 +90,8 @@
 #define IDS_CYCLICREPLACEINFO               403
 #define IDS_NOTEPAD_VERSION                 404
 #define IDS_README                          405
+#define IDS_WANTONEITEM                     406
+#define IDS_CONFLICT                        407
 #define IDS_TEXT_DOCUMENT                   512
 
 #define ID_ACCEL                            515

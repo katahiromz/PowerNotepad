@@ -1,0 +1,15 @@
+﻿# 変更履歴
+
+- 2026-05-14 Ver.1.0.1
+    - マイナーなバグ修正。
+    - 「複数同時置換」を実装。
+- 2026-05-13 Ver.1.0.0
+    - 初公開。
+
+# Changelog
+
+- 2026-05-14 Ver.1.0.1
+    - Minor bug fixes.
+    - Implemented "Replace multiple at once".
+- 2026-05-13 Ver.1.0.0
+    - First release.

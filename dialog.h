@@ -44,6 +44,7 @@ VOID DIALOG_HelpNoWarranty(VOID);
 VOID DIALOG_HelpAboutNotepad(VOID);
 
 VOID DIALOG_CyclicReplace(VOID);
+VOID DIALOG_ReplaceMultipleAtOnce(VOID);
 
 VOID DIALOG_TimeDate(VOID);
 

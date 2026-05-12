@@ -61,6 +61,7 @@ typedef struct tagFINDREPLACEDX : FINDREPLACE
 {
     BOOL bRegExp;
     BOOL bCyclic;
+    BOOL bMultiple;
 } FINDREPLACEDX, *PFINDREPLACEDX;
 
 #define MAX_FINDREPLACE_LENGTH 512
@@ -96,6 +97,7 @@ typedef struct
     WNDPROC EditProc;
     BOOL bWasModified;
     std::vector<std::wstring>* pCyclicReplaceItems;
+    std::vector<std::pair<std::wstring, std::wstring> >* pReplaceMultipleAtOnceItems;
 } NOTEPAD_GLOBALS;
 
 extern NOTEPAD_GLOBALS Globals;

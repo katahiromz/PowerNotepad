@@ -37,6 +37,7 @@ IDR_MAIN_MENU MENU
         MENUITEM "&Replace...\tCtrl+H", IDC_REPLACE
         MENUITEM SEPARATOR
         MENUITEM "C&yclic Replace...\tCtrl+Shift+H", IDC_CYCLIC_REPLACE
+        MENUITEM "Replace &multiple at once...\tAlt+Shift+H", IDC_REPLACEMULTIPLEATONCE
         MENUITEM SEPARATOR
         MENUITEM "&Go To...\tCtrl+G", IDC_GOTO
         MENUITEM SEPARATOR
@@ -188,7 +189,7 @@ FONT 9, "MS Shell Dlg"
     PUSHBUTTON "Cancel", IDCANCEL, 205, 25, 60, 15
     AUTOCHECKBOX "Match &case", chx1, 155, 50, 105, 15
     AUTOCHECKBOX "Match &whole word only", chx2, 155, 70, 105, 15
-    LTEXT "&Info:", -1, 5, 140, 65, 10, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "Info:", -1, 5, 140, 65, 10, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 5, 155, 260, 40, ES_READONLY | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
 }
 
@@ -201,6 +202,39 @@ FONT 9, "MS Shell Dlg"
     EDITTEXT edt1, 50, 5, 120, 15
     DEFPUSHBUTTON "OK", IDOK, 45, 30, 60, 20
     PUSHBUTTON "Cancel", IDCANCEL, 110, 30, 60, 20
+}
+
+IDD_REPLACEMULTIPLEATONCE DIALOG 0, 0, 321, 197
+CAPTION "Replace multiple at once"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg"
+{
+    LTEXT "&Items:", -1, 5, 5, 65, 10, SS_CENTERIMAGE | NOT WS_GROUP
+    LISTBOX lst1, 5, 20, 140, 110, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON "&Add...", psh2, 150, 20, 55, 20
+    PUSHBUTTON "&Up", psh3, 150, 45, 55, 20
+    PUSHBUTTON "&Down", psh4, 150, 65, 55, 20
+    PUSHBUTTON "Re&move", psh5, 150, 90, 55, 20
+    PUSHBUTTON "R&emove All", psh6, 150, 110, 55, 20
+    PUSHBUTTON "&Replace All", IDOK, 255, 5, 60, 15
+    PUSHBUTTON "Cancel", IDCANCEL, 255, 25, 60, 15
+    AUTOCHECKBOX "Match &case", chx1, 210, 50, 105, 15
+    AUTOCHECKBOX "Match &whole word only", chx2, 210, 70, 105, 15
+    LTEXT "&Info:", -1, 5, 140, 65, 10, SS_CENTERIMAGE | NOT WS_GROUP
+    EDITTEXT edt1, 5, 155, 310, 35, ES_READONLY | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
+}
+
+IDD_ADDPAIR DIALOG 0, 0, 225, 83
+CAPTION "Add Pair"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS Shell Dlg"
+{
+    LTEXT "Fi&nd what:", -1, 5, 5, 60, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    EDITTEXT edt1, 65, 5, 155, 15
+    LTEXT "Re&place with:", -1, 5, 30, 60, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    EDITTEXT edt2, 65, 30, 155, 15
+    DEFPUSHBUTTON "OK", IDOK, 50, 55, 60, 20
+    PUSHBUTTON "Cancel", IDCANCEL, 120, 55, 60, 20
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -246,6 +280,8 @@ STRINGTABLE
     IDS_CYCLICREPLACEINFO, "We will perform the following cyclic replacement:\r\n\r\n"
     IDS_NOTEPAD_VERSION, "PowerNote Version 1.0.0\r\n\r\nCopyright (c) 2026 katahiromz"
     IDS_README, "README.txt"
+    IDS_WANTONEITEM, "Please add one or more items for multiple replacement at once."
+    IDS_CONFLICT, "Warning: Item %d and item %d are in conflict. Please place the longer search string on top."
     IDS_TEXT_DOCUMENT, "Text Document"
 }
 

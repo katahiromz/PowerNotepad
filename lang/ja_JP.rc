@@ -37,6 +37,7 @@ IDR_MAIN_MENU MENU
         MENUITEM "置換(&R)...\tCtrl+H", IDC_REPLACE
         MENUITEM SEPARATOR
         MENUITEM "巡回置換(&Y)...\tCtrl+Shift+H", IDC_CYCLIC_REPLACE
+        MENUITEM "複数同時置換(&M)...\tAlt+Shift+H", IDC_REPLACEMULTIPLEATONCE
         MENUITEM SEPARATOR
         MENUITEM "行へ移動...\tCtrl+G", IDC_GOTO
         MENUITEM SEPARATOR
@@ -188,7 +189,7 @@ FONT 9, "MS UI Gothic"
     PUSHBUTTON "キャンセル", IDCANCEL, 205, 25, 60, 15
     AUTOCHECKBOX "大文字小文字を区別する(&C)", chx1, 155, 50, 105, 15
     AUTOCHECKBOX "単語単位で探す(&W)", chx2, 155, 70, 105, 15
-    LTEXT "情報(&I):", -1, 5, 140, 65, 10, SS_CENTERIMAGE | NOT WS_GROUP
+    LTEXT "情報:", -1, 5, 140, 65, 10, SS_CENTERIMAGE | NOT WS_GROUP
     EDITTEXT edt1, 5, 155, 260, 40, ES_READONLY | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
 }
 
@@ -201,6 +202,39 @@ FONT 9, "MS UI Gothic"
     EDITTEXT edt1, 50, 5, 120, 15
     DEFPUSHBUTTON "OK", IDOK, 45, 30, 60, 20
     PUSHBUTTON "キャンセル", IDCANCEL, 110, 30, 60, 20
+}
+
+IDD_REPLACEMULTIPLEATONCE DIALOG 0, 0, 321, 197
+CAPTION "複数同時置換"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS UI Gothic"
+{
+    LTEXT "項目(&I):", -1, 5, 5, 65, 10, SS_CENTERIMAGE | NOT WS_GROUP
+    LISTBOX lst1, 5, 20, 140, 110, LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON "追加(&A)...", psh2, 150, 20, 55, 20
+    PUSHBUTTON "↑(&U)", psh3, 150, 45, 55, 20
+    PUSHBUTTON "↓(&D)", psh4, 150, 65, 55, 20
+    PUSHBUTTON "削除(&M)", psh5, 150, 90, 55, 20
+    PUSHBUTTON "すべて削除(&E)", psh6, 150, 110, 55, 20
+    PUSHBUTTON "すべて置換(&R)", IDOK, 255, 5, 60, 15
+    PUSHBUTTON "キャンセル", IDCANCEL, 255, 25, 60, 15
+    AUTOCHECKBOX "大文字小文字を区別する(&C)", chx1, 210, 50, 105, 15
+    AUTOCHECKBOX "単語単位で探す(&W)", chx2, 210, 70, 105, 15
+    LTEXT "情報:", -1, 5, 140, 65, 10, SS_CENTERIMAGE | NOT WS_GROUP
+    EDITTEXT edt1, 5, 155, 310, 35, ES_READONLY | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL
+}
+
+IDD_ADDPAIR DIALOG 0, 0, 225, 83
+CAPTION "ペアの追加"
+STYLE DS_MODALFRAME | WS_POPUPWINDOW | WS_CAPTION
+FONT 9, "MS UI Gothic"
+{
+    LTEXT "検索文字列(&N):", -1, 5, 5, 60, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    EDITTEXT edt1, 65, 5, 155, 15
+    LTEXT "置換後文字列(&P):", -1, 5, 30, 60, 15, SS_CENTERIMAGE | NOT WS_GROUP
+    EDITTEXT edt2, 65, 30, 155, 15
+    DEFPUSHBUTTON "OK", IDOK, 50, 55, 60, 20
+    PUSHBUTTON "キャンセル", IDCANCEL, 120, 55, 60, 20
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -246,6 +280,8 @@ STRINGTABLE
     IDS_CYCLICREPLACEINFO, "次のように巡回置換します：\r\n\r\n"
     IDS_NOTEPAD_VERSION, "PowerNote バージョン 1.0.0\r\n\r\nCopyright (c) 2026 片山博文MZ"
     IDS_README, "README_ja.txt"
+    IDS_WANTONEITEM, "複数同時置換用の1個以上の項目を追加してください。"
+    IDS_CONFLICT, "警告：%d番目の項目と%d番目の項目が衝突しています。長い検索文字列を上にするようにしてください。"
     IDS_TEXT_DOCUMENT, "テキスト文書"
 }
 
