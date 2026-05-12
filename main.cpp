@@ -855,6 +855,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE prev, LPTSTR cmdline, int sh
     }
 
     DestroyAcceleratorTable(hAccel);
+    Globals.CyclicReplaceItems.clear();
 
     return (int) msg.wParam;
 }

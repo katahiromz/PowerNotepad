@@ -14,8 +14,6 @@
 #include <commctrl.h>
 #include <windowsx.h>
 #include <strsafe.h>
-#include <vector>
-#include <string>
 
 LRESULT CALLBACK EDIT_WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -1136,8 +1134,15 @@ DIALOG_AddItem_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             {
                 case IDOK:
                     GetDlgItemTextW(hwnd, edt1, text, _countof(text));
-                    s_pThis->text = text;
-                    EndDialog(hwnd, IDOK);
+                    if (text[0])
+                    {
+                        s_pThis->text = text;
+                        EndDialog(hwnd, IDOK);
+                    }
+                    else
+                    {
+                        
+                    }
                     break;
                 case IDCANCEL:
                     EndDialog(hwnd, IDCANCEL);
@@ -1159,6 +1164,12 @@ DIALOG_CyclicReplace_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             s_pThis = (PCYCLIC_REPLACE)lParam;
             SendDlgItemMessage(hwnd, lst1, LB_SETITEMHEIGHT, 0, 24);
+
+            HWND hLst1 = GetDlgItem(hwnd, lst1);
+            for (size_t iItem = 0; iItem < s_pThis->items.size(); ++iItem)
+            {
+                ListBox_AddString(hLst1, s_pThis->items[iItem].c_str());
+            }
             return TRUE;
         }
         case WM_COMMAND:
@@ -1178,6 +1189,9 @@ DIALOG_CyclicReplace_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                         ListBox_GetText(hLst1, iItem, text);
                         s_pThis->items.push_back(text);
                     }
+
+                    s_pThis->bWholeWord = !!(Globals.find.Flags & FR_WHOLEWORD);
+                    s_pThis->bIgnoreCase = !(Globals.find.Flags & FR_MATCHCASE);
 
                     EndDialog(hwnd, IDOK);
                     break;
@@ -1257,11 +1271,17 @@ VOID DIALOG_CyclicReplace(VOID)
     CYCLIC_REPLACE data;
     data.bWholeWord = !!(Globals.find.Flags & FR_WHOLEWORD);
     data.bIgnoreCase = !(Globals.find.Flags & FR_MATCHCASE);
+    data.items = Globals.CyclicReplaceItems;
     INT_PTR id = DialogBoxParam(GetModuleHandle(NULL),
                                 MAKEINTRESOURCE(IDD_CYCLICREPLACE), Globals.hMainWnd,
                                 DIALOG_CyclicReplace_DlgProc, (LPARAM)&data);
     if (id == IDOK)
     {
-
+        Globals.find.Flags &= ~(FR_WHOLEWORD | FR_MATCHCASE);
+        if (data.bWholeWord)
+            Globals.find.Flags |= FR_WHOLEWORD;
+        if (data.bIgnoreCase)
+            Globals.find.Flags |= FR_MATCHCASE;
+        Globals.CyclicReplaceItems = data.items;
     }
 }

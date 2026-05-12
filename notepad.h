@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <algorithm>
+#include <vector>
+#include <string>
 using std::max;
 using std::min;
 
@@ -92,6 +94,7 @@ typedef struct
     FINDREPLACEDX find;
     WNDPROC EditProc;
     BOOL bWasModified;
+    std::vector<std::wstring> CyclicReplaceItems;
 } NOTEPAD_GLOBALS;
 
 extern NOTEPAD_GLOBALS Globals;
