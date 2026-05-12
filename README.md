@@ -1,4 +1,4 @@
-# ![](img/notepad-32x32.png) Power Notepad
+# ![](img/mainicon-32x32.png) Power Notepad
 
 This is "Power Notepad".
 
