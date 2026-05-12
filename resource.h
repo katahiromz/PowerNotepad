@@ -82,6 +82,8 @@
 #define IDS_PRINTCANCELED                   399
 #define IDS_PRINTFAILED                     400
 #define IDS_INVALID_REGEX                   401
+#define IDS_WANTTWOITEMS                    402
+#define IDS_CYCLICREPLACEINFO               403
 #define IDS_TEXT_DOCUMENT                   512
 #define IDS_NOTEPAD_AUTHORS                 768
 

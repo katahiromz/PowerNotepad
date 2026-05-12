@@ -263,6 +263,8 @@ STRINGTABLE
     IDS_PRINTCANCELED, "印刷がキャンセルされました。"
     IDS_PRINTFAILED, "印刷が失敗しました。"
     IDS_INVALID_REGEX, "正規表現が不正です"
+    IDS_WANTTWOITEMS, "巡回置換用の2個以上の項目を追加してください。"
+    IDS_CYCLICREPLACEINFO, "次のように巡回置換します：\r\n\r\n"
     IDS_TEXT_DOCUMENT, "テキスト文書"
     IDS_NOTEPAD_AUTHORS, "Copyright 1997,98 Marcel Baur, 2000 Mike McCormack, 2002 Sylvain Petreolle, 2002 Andriy Palamarchuk\r\n"
 }

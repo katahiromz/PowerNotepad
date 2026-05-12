@@ -230,7 +230,7 @@ NOTEPAD_FindRegexUp(PFINDREPLACEDX pFindReplace, const RegexEngine& regexFind,
  */
 BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAlert)
 {
-    int iTextLength, iTargetLength;
+    INT iTextLength, iTargetLength;
     DWORD dwMatchEnd;
     LPCTSTR pszText = NULL;
     HLOCAL hText = NULL;
@@ -242,7 +242,7 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
     BOOL bUseRegex;
     RegexEngine regexFind;
 
-    iTargetLength = (int) _tcslen(pFindReplace->lpstrFindWhat);
+    iTargetLength = (INT)_tcslen(pFindReplace->lpstrFindWhat);
     bUseRegex = pFindReplace->bRegExp;
 
     if (bUseRegex)
@@ -426,7 +426,7 @@ BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAler
 /***********************************************************************
  *           NOTEPAD_ReplaceAll
  */
-static VOID NOTEPAD_ReplaceAll(PFINDREPLACEDX pFindReplace)
+VOID NOTEPAD_ReplaceAll(PFINDREPLACEDX pFindReplace)
 {
     BOOL bShowAlert = TRUE;
 

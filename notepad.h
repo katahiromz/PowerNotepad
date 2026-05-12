@@ -106,5 +106,6 @@ void NOTEPAD_LoadSettingsFromRegistry(PWINDOWPLACEMENT pWP);
 void NOTEPAD_SaveSettingsToRegistry(void);
 
 BOOL NOTEPAD_FindNext(PFINDREPLACEDX pFindReplace, BOOL bReplace, BOOL bShowAlert);
+VOID NOTEPAD_ReplaceAll(PFINDREPLACEDX pFindReplace);
 VOID NOTEPAD_EnableSearchMenu(VOID);
 VOID SetFileName(LPCTSTR szFileName);

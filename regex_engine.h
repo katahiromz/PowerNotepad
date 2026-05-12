@@ -82,6 +82,6 @@ private:
     void *m_matchData;  /* pcre2_match_data_16* */
 
     /* Non-copyable */
-    RegexEngine(const RegexEngine &) = delete;
-    RegexEngine &operator=(const RegexEngine &) = delete;
+    RegexEngine(const RegexEngine&) = delete;
+    RegexEngine& operator=(const RegexEngine&) = delete;
 };
