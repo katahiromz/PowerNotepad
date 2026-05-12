@@ -48,9 +48,9 @@ set(BUILD_SHARED_LIBS       OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(pcre2)
 
 ##############################################################################
-# PowNote.exe
+# PowerNote.exe
 
-add_executable(PowNote WIN32
+add_executable(PowerNote WIN32
     dialog.cpp
     main.cpp
     printing.cpp
@@ -59,20 +59,20 @@ add_executable(PowNote WIN32
     text.cpp
     rsrc.rc)
 
-target_compile_definitions(PowNote PRIVATE UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS)
+target_compile_definitions(PowerNote PRIVATE UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS)
 
 if (NOT MSVC)
-    target_link_options(PowNote BEFORE PRIVATE -municode)
+    target_link_options(PowerNote BEFORE PRIVATE -municode)
 endif()
 
-target_link_libraries(PowNote PRIVATE user32 gdi32 comctl32 comdlg32 advapi32 shell32 kernel32 pcre2-16-static)
+target_link_libraries(PowerNote PRIVATE user32 gdi32 comctl32 comdlg32 advapi32 shell32 kernel32 pcre2-16-static)
 
 if (MSVC)
     # Use wWinMain
-    target_link_options(PowNote PRIVATE "/entry:wWinMainCRTStartup")
+    target_link_options(PowerNote PRIVATE "/entry:wWinMainCRTStartup")
 
     # No default manifest
-    target_link_options(PowNote PRIVATE /MANIFEST:NO)
+    target_link_options(PowerNote PRIVATE /MANIFEST:NO)
 endif()
 
 ##############################################################################
