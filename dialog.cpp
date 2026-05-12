@@ -12,7 +12,10 @@
 
 #include <assert.h>
 #include <commctrl.h>
+#include <windowsx.h>
 #include <strsafe.h>
+#include <vector>
+#include <string>
 
 LRESULT CALLBACK EDIT_WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -1105,6 +1108,160 @@ VOID DIALOG_HelpAboutNotepad(VOID)
                LoadIcon(Globals.hInstance, MAKEINTRESOURCE(IDI_NPICON)));
 }
 
+typedef struct CYCLIC_REPLACE
+{
+    std::vector<std::wstring> items;
+    BOOL bWholeWord;
+    BOOL bIgnoreCase;
+    std::wstring text;
+} CYCLIC_REPLACE, *PCYCLIC_REPLACE;
+
+static INT_PTR CALLBACK
+DIALOG_AddItem_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    static PCYCLIC_REPLACE s_pThis = NULL;
+    WCHAR text[MAX_FINDREPLACE_LENGTH];
+
+    switch (uMsg)
+    {
+        case WM_INITDIALOG:
+        {
+            s_pThis = (PCYCLIC_REPLACE)lParam;
+            SendDlgItemMessage(hwnd, edt1, EM_LIMITTEXT, MAX_FINDREPLACE_LENGTH - 1, 0);
+            return TRUE;
+        }
+        case WM_COMMAND:
+        {
+            switch (LOWORD(wParam))
+            {
+                case IDOK:
+                    GetDlgItemTextW(hwnd, edt1, text, _countof(text));
+                    s_pThis->text = text;
+                    EndDialog(hwnd, IDOK);
+                    break;
+                case IDCANCEL:
+                    EndDialog(hwnd, IDCANCEL);
+                    break;
+            }
+        }
+    }
+    return 0;
+}
+
+static INT_PTR CALLBACK
+DIALOG_CyclicReplace_DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    static PCYCLIC_REPLACE s_pThis = NULL;
+
+    switch (uMsg)
+    {
+        case WM_INITDIALOG:
+        {
+            s_pThis = (PCYCLIC_REPLACE)lParam;
+            SendDlgItemMessage(hwnd, lst1, LB_SETITEMHEIGHT, 0, 24);
+            return TRUE;
+        }
+        case WM_COMMAND:
+        {
+            switch (LOWORD(wParam))
+            {
+                case IDOK:
+                {
+                    s_pThis->items.clear();
+
+                    HWND hLst1 = GetDlgItem(hwnd, lst1);
+                    INT cItems = ListBox_GetCount(hLst1);
+
+                    WCHAR text[MAX_FINDREPLACE_LENGTH];
+                    for (INT iItem = 0; iItem < cItems; ++iItem)
+                    {
+                        ListBox_GetText(hLst1, iItem, text);
+                        s_pThis->items.push_back(text);
+                    }
+
+                    EndDialog(hwnd, IDOK);
+                    break;
+                }
+                case IDCANCEL:
+                    EndDialog(hwnd, IDCANCEL);
+                    break;
+                case psh2: // Add Item
+                {
+                    if (DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ADDITEM),
+                                       hwnd, DIALOG_AddItem_DlgProc, (LPARAM)s_pThis) == IDOK)
+                    {
+                        HWND hLst1 = GetDlgItem(hwnd, lst1);
+                        INT iItem = ListBox_AddString(GetDlgItem(hwnd, lst1), s_pThis->text.c_str());
+                        ListBox_SetCurSel(hLst1, iItem);
+                    }
+                    break;
+                }
+                case psh3: // Up
+                {
+                    WCHAR text1[MAX_FINDREPLACE_LENGTH], text2[MAX_FINDREPLACE_LENGTH];
+                    HWND hLst1 = GetDlgItem(hwnd, lst1);
+                    INT iItem = ListBox_GetCurSel(hLst1);
+                    if (iItem == LB_ERR || iItem == 0)
+                        break;
+                    ListBox_GetText(hLst1, iItem - 1, text1);
+                    ListBox_GetText(hLst1, iItem, text2);
+                    ListBox_DeleteString(hLst1, iItem - 1);
+                    ListBox_DeleteString(hLst1, iItem - 1);
+                    ListBox_InsertString(hLst1, iItem - 1, text1);
+                    ListBox_InsertString(hLst1, iItem - 1, text2);
+                    ListBox_SetCurSel(hLst1, iItem - 1);
+                    break;
+                }
+                case psh4: // Down
+                {
+                    WCHAR text1[MAX_FINDREPLACE_LENGTH], text2[MAX_FINDREPLACE_LENGTH];
+                    HWND hLst1 = GetDlgItem(hwnd, lst1);
+                    INT iItem = ListBox_GetCurSel(hLst1);
+                    INT cItems = ListBox_GetCount(hLst1);
+                    if (iItem == LB_ERR || iItem + 1 >= cItems)
+                        break;
+                    ListBox_GetText(hLst1, iItem, text1);
+                    ListBox_GetText(hLst1, iItem + 1, text2);
+                    ListBox_DeleteString(hLst1, iItem);
+                    ListBox_DeleteString(hLst1, iItem);
+                    ListBox_InsertString(hLst1, iItem, text1);
+                    ListBox_InsertString(hLst1, iItem, text2);
+                    ListBox_SetCurSel(hLst1, iItem + 1);
+                    break;
+                }
+                case psh5: // Remove
+                {
+                    HWND hLst1 = GetDlgItem(hwnd, lst1);
+                    INT iItem = ListBox_GetCurSel(hLst1);
+                    if (iItem == LB_ERR)
+                        break;
+                    ListBox_DeleteString(hLst1, iItem);
+                    ListBox_SetCurSel(hLst1, iItem);
+                    break;
+                }
+                case psh6: // Remove All
+                {
+                    HWND hLst1 = GetDlgItem(hwnd, lst1);
+                    ListBox_ResetContent(hLst1);
+                    break;
+                }
+            }
+            break;
+        }
+    }
+    return 0;
+}
+
 VOID DIALOG_CyclicReplace(VOID)
 {
+    CYCLIC_REPLACE data;
+    data.bWholeWord = !!(Globals.find.Flags & FR_WHOLEWORD);
+    data.bIgnoreCase = !(Globals.find.Flags & FR_MATCHCASE);
+    INT_PTR id = DialogBoxParam(GetModuleHandle(NULL),
+                                MAKEINTRESOURCE(IDD_CYCLICREPLACE), Globals.hMainWnd,
+                                DIALOG_CyclicReplace_DlgProc, (LPARAM)&data);
+    if (id == IDOK)
+    {
+
+    }
 }
