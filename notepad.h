@@ -74,8 +74,8 @@ typedef struct
     LOGFONT lfFont;
     BOOL bWrapLongLines;
     BOOL bShowStatusBar;
-    TCHAR szFindText[MAX_PATH];
-    TCHAR szReplaceText[MAX_PATH];
+    TCHAR szFindText[1024];
+    TCHAR szReplaceText[1024];
     TCHAR szFileName[MAX_PATH];
     TCHAR szFileTitle[MAX_PATH];
     TCHAR szFilter[512];
